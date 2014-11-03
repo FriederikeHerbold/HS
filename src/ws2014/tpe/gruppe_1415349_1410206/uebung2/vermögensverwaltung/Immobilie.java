@@ -12,7 +12,7 @@ public class Immobilie extends FestverzinslicheVermoegensgegenstaende {
 		setZinssatz( getKaufPreis() / getLaufzeit());
 	}
 
-	@Override
+/*	@Override
 	public long berechneWert(int restLaufzeit) {
 		if(getLaufzeit() ==restLaufzeit){
 			return getKaufPreis();
@@ -21,7 +21,7 @@ public class Immobilie extends FestverzinslicheVermoegensgegenstaende {
 		}else{
 			return berechneWert(restLaufzeit);
 		}
-	}
+	}*/
 
 	public String toString() {
 		return "Name der Immobilie " + getName() + "\n" + "Kaufpreis betraegt "
