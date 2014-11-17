@@ -1,11 +1,14 @@
 package ws2014.tpe.gruppe_1415349_1410206.uebung3.binaer_hash_baum;
 
+
+
 public class Baum<B, T> implements AssoziativesArray {
 	private Knoten<B, T> wurzel;
 
 	public Baum(B schluessel, T wert) {
 		put(schluessel, wert);
 	}
+	
 
 	class Knoten<B, T> {
 		Knoten<B, T> links;
@@ -19,29 +22,70 @@ public class Baum<B, T> implements AssoziativesArray {
 			this.links = null;
 			this.rechts = null;
 		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			return "[schluessel=" + schluessel + ", wert=" + wert + "]";
+		}
+		
+		
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
+		wurzel = null;
 
 	}
 
 	@Override
 	public boolean containsValue(Object wert) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		Knoten n = wurzel;
+
+        while (n != null) {
+            if (n.wert.equals(wert)) {
+                return true; 
+            } else if (!n.wert.equals(wert)) {
+                n = n.links;
+            } else {
+                n = n.rechts;
+            }
+        }
+        return false;
+    }
+	
 
 	@Override
 	public boolean containsKey(Object schluessel) {
-		// TODO Auto-generated method stub
-		return false;
+		Knoten n = wurzel;
+
+        while (n != null) {
+            if (n.schluessel.equals(schluessel)) {
+                return true; 
+            } else if (!n.schluessel.equals(schluessel)) {
+                n = n.links;
+            } else {
+                n = n.rechts;
+            }
+        }
+        return false;
 	}
 
 	@Override
 	public Object get(Object schluessel) {
-		// TODO Auto-generated method stub
+		Knoten n = wurzel;
+	
+		while (n != null) {
+			if(n.schluessel.equals(schluessel)){
+			return n.wert;
+		}else if(!n.schluessel.equals(schluessel)){
+			n = n.links;
+		 } else {
+             n = n.rechts;
+		}
+		}
 		return null;
 	}
 
@@ -108,22 +152,57 @@ public class Baum<B, T> implements AssoziativesArray {
 
 	}
 
-	@Override
-	public boolean equals(Object arg0) {
-		// TODO Auto-generated method stub
-		return super.equals(arg0);
-	}
+	
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
-		return super.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((wurzel == null) ? 0 : wurzel.hashCode());
+		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Baum other = (Baum) obj;
+		if (wurzel == null) {
+			if (other.wurzel != null)
+				return false;
+		} else if (!wurzel.equals(other.wurzel))
+			return false;
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		String text = "";
+		Knoten n = wurzel;
+		while(n!=null){
+			return text += n.toString();
+		}
+		return text;
+	}
+			
+			
+		  
+		
 	}
 
-}
+	
+
+
