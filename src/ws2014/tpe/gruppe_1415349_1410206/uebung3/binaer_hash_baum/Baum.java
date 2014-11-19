@@ -191,6 +191,9 @@ public class Baum<B, T> implements AssoziativesArray {
 	 */
 	@Override
 	public String toString() {
+		
+		
+		
 		String text = "";
 
 		Knoten n = wurzel;
