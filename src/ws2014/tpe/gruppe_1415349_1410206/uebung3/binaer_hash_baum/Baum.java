@@ -1,14 +1,11 @@
 package ws2014.tpe.gruppe_1415349_1410206.uebung3.binaer_hash_baum;
 
-
-
 public class Baum<B, T> implements AssoziativesArray {
 	private Knoten<B, T> wurzel;
 
 	public Baum(B schluessel, T wert) {
 		put(schluessel, wert);
 	}
-	
 
 	class Knoten<B, T> {
 		Knoten<B, T> links;
@@ -23,15 +20,16 @@ public class Baum<B, T> implements AssoziativesArray {
 			this.rechts = null;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		@Override
 		public String toString() {
 			return "[schluessel=" + schluessel + ", wert=" + wert + "]";
 		}
-		
-		
+
 	}
 
 	@Override
@@ -44,47 +42,46 @@ public class Baum<B, T> implements AssoziativesArray {
 	public boolean containsValue(Object wert) {
 		Knoten n = wurzel;
 
-        while (n != null) {
-            if (n.wert.equals(wert)) {
-                return true; 
-            } else if (!n.wert.equals(wert)) {
-                n = n.links;
-            } else {
-                n = n.rechts;
-            }
-        }
-        return false;
-    }
-	
+		while (n != null) {
+			if (n.wert.equals(wert)) {
+				return true;
+			} else if (!n.wert.equals(wert)) {
+				n = n.links;
+			} else {
+				n = n.rechts;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public boolean containsKey(Object schluessel) {
 		Knoten n = wurzel;
 
-        while (n != null) {
-            if (n.schluessel.equals(schluessel)) {
-                return true; 
-            } else if (!n.schluessel.equals(schluessel)) {
-                n = n.links;
-            } else {
-                n = n.rechts;
-            }
-        }
-        return false;
+		while (n != null) {
+			if (n.schluessel.equals(schluessel)) {
+				return true;
+			} else if (!n.schluessel.equals(schluessel)) {
+				n = n.links;
+			} else {
+				n = n.rechts;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public Object get(Object schluessel) {
 		Knoten n = wurzel;
-	
+
 		while (n != null) {
-			if(n.schluessel.equals(schluessel)){
-			return n.wert;
-		}else if(!n.schluessel.equals(schluessel)){
-			n = n.links;
-		 } else {
-             n = n.rechts;
-		}
+			if (n.schluessel.equals(schluessel)) {
+				return n.wert;
+			} else if (!n.schluessel.equals(schluessel)) {
+				n = n.links;
+			} else {
+				n = n.rechts;
+			}
 		}
 		return null;
 	}
@@ -152,9 +149,9 @@ public class Baum<B, T> implements AssoziativesArray {
 
 	}
 
-	
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -165,7 +162,9 @@ public class Baum<B, T> implements AssoziativesArray {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -185,24 +184,20 @@ public class Baum<B, T> implements AssoziativesArray {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		String text = "";
+
 		Knoten n = wurzel;
-		while(n!=null){
+		while (n != null) {
 			return text += n.toString();
 		}
 		return text;
 	}
-			
-			
-		  
-		
-	}
 
-	
-
-
+}
