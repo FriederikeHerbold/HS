@@ -8,10 +8,11 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	class Knoten<B, T> {
-		Knoten<B, T> links;
-		Knoten<B, T> rechts;
-		B schluessel;
-		T wert;
+		private Knoten<B, T> eltern;
+		private Knoten<B, T> links;
+		private Knoten<B, T> rechts;
+		private B schluessel;
+		private T wert;
 
 		public Knoten(B schluessel, T wert) {
 			this.schluessel = schluessel;
@@ -27,10 +28,39 @@ public class Baum<B, T> implements AssoziativesArray {
 		 */
 		@Override
 		public String toString() {
-			return "[schluessel=" + schluessel + ", wert=" + wert + "]";
+			return "[schluessel=" + schluessel + ", wert=" + wert + " hash "
+					+ schluessel.hashCode() + "]";
 		}
+		
 
-	}
+
+		/**
+		 * Setzt den linken Nachfolger und verknüpft ihn mit seinem Vorgänger.
+		 * 
+		 * @param n
+		 */
+		public void setLeft(Knoten zeiger) {
+			links = zeiger;
+			if (zeiger != null) {
+				zeiger.eltern = this;
+			}
+		}
+		
+
+		/**
+		 * Setzt den rechten Nachfolger und verknüpft ihn mit seinem Vorgänger.
+		 * 
+		 * @param n
+		 */
+		public void setRight(Knoten zeiger) {
+			rechts = zeiger;
+			if (zeiger != null) {
+				zeiger.eltern = this;
+			}
+		}
+		
+
+}
 
 	@Override
 	public void clear() {
@@ -40,15 +70,15 @@ public class Baum<B, T> implements AssoziativesArray {
 
 	@Override
 	public boolean containsValue(Object wert) {
-		Knoten n = wurzel;
+		Knoten zeiger = wurzel;
 
-		while (n != null) {
-			if (n.wert.equals(wert)) {
+		while (zeiger != null) {
+			if (zeiger.wert.equals(wert)) {
 				return true;
-			} else if (!n.wert.equals(wert)) {
-				n = n.links;
+			} else if (!zeiger.wert.equals(wert)) {
+				zeiger = zeiger.links;
 			} else {
-				n = n.rechts;
+				zeiger = zeiger.rechts;
 			}
 		}
 		return false;
@@ -56,15 +86,15 @@ public class Baum<B, T> implements AssoziativesArray {
 
 	@Override
 	public boolean containsKey(Object schluessel) {
-		Knoten n = wurzel;
+		Knoten zeiger = wurzel;
 
-		while (n != null) {
-			if (n.schluessel.equals(schluessel)) {
+		while (zeiger != null) {
+			if (zeiger.schluessel.hashCode() == schluessel.hashCode()) {
 				return true;
-			} else if (!n.schluessel.equals(schluessel)) {
-				n = n.links;
+			} else if (schluessel.hashCode() < zeiger.schluessel.hashCode()) {
+				zeiger = zeiger.links;
 			} else {
-				n = n.rechts;
+				zeiger = zeiger.rechts;
 			}
 		}
 		return false;
@@ -72,15 +102,15 @@ public class Baum<B, T> implements AssoziativesArray {
 
 	@Override
 	public Object get(Object schluessel) {
-		Knoten n = wurzel;
+		Knoten zeiger = wurzel;
 
-		while (n != null) {
-			if (n.schluessel.equals(schluessel)) {
-				return n.wert;
-			} else if (!n.schluessel.equals(schluessel)) {
-				n = n.links;
+		while (zeiger != null) {
+			if (zeiger.schluessel.hashCode() == schluessel.hashCode()) {
+				return zeiger.wert;
+			} else if (schluessel.hashCode() < zeiger.schluessel.hashCode()) {
+				zeiger = zeiger.links;
 			} else {
-				n = n.rechts;
+				zeiger = zeiger.rechts;
 			}
 		}
 		return null;
@@ -100,26 +130,32 @@ public class Baum<B, T> implements AssoziativesArray {
 	/**
 	 * 
 	 */
+
 	@Override
 	public void put(Object schluessel, Object wert) {
-		if (wurzel == null) {
-			this.wurzel = new Knoten(schluessel, wert);
+		Knoten parent = null;
+		Knoten node = wurzel;
+
+		while (node != null) {
+			parent = node;
+			if (schluessel.hashCode() < node.schluessel.hashCode()) {
+				node = node.links;
+			} else {
+				node = node.rechts;
+			}
+		}
+
+		Knoten newNode = new Knoten(schluessel, wert);
+		if (parent == null) {
+			wurzel = newNode;
+			
+		} else if (schluessel.hashCode() < parent.schluessel.hashCode()) {
+			parent.setLeft(newNode);
+			
 		} else {
-			Knoten temp = new Knoten(schluessel, wert);
-			Knoten hilf = wurzel;
-			put(temp, hilf);
+			parent.setRight(newNode);
 		}
 
-	}
-
-	private void put(Knoten temp, Knoten n) {
-		if (n == null) {
-			n = temp;
-		} else if (temp.hashCode() < n.hashCode()) {
-			put(temp, n.links);
-		} else if (temp.hashCode() > n.hashCode()) {
-			put(temp, n.rechts);
-		}
 	}
 
 	/**
@@ -130,13 +166,28 @@ public class Baum<B, T> implements AssoziativesArray {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		 if (wurzel == null) {
+		 return 0;
+		 } else {
+		 return size(wurzel);
+		 }
+		 }
+		
 
+	private int size(Knoten knoten) {
+		 int sizeLinks = 0;
+		 int sizeRechts = 0;
+		 if (knoten.links != null) {
+			 sizeLinks = size(knoten.links);
+		 }
+		 if (knoten.rechts != null) {
+			 sizeRechts = size(knoten.rechts);
+		 }
+		 return 1 + sizeLinks + sizeRechts;
+		 }
+		
 	@Override
 	public void update(Object schluessel, Object wert) {
 		// TODO Auto-generated method stub
@@ -191,16 +242,23 @@ public class Baum<B, T> implements AssoziativesArray {
 	 */
 	@Override
 	public String toString() {
-		
-		
-		
-		String text = "";
-
-		Knoten n = wurzel;
-		while (n != null) {
-			return text += n.toString();
+		String ausgabe = "";
+		if (wurzel != null) {
+			ausgabe = toStringInOrder(wurzel, "");
 		}
-		return text;
+		return ausgabe;
 	}
 
+	public String toStringInOrder(Knoten<B, T> knoten, String a) {
+		if (knoten.links != null) {
+			a = a + toStringInOrder(knoten.links, "");
+		}
+
+		a = a + knoten.toString();
+
+		if (knoten.rechts != null) {
+			a = a + toStringInOrder(knoten.rechts, "");
+		}
+		return a;
+	}
 }
