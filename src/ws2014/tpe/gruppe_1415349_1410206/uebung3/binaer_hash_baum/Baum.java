@@ -6,7 +6,14 @@ public class Baum<B, T> implements AssoziativesArray {
 	public Baum(B schluessel, T wert) {
 		put(schluessel, wert);
 	}
-
+	/**
+	 * Innere Klasse die einen Knoten Darstellt.
+	 * 
+	 * @author FH-Netbook
+	 * 
+	 * @param <B>
+	 * @param <T>
+	 */
 	class Knoten<B, T> {
 		private Knoten<B, T> eltern;
 		private Knoten<B, T> links;
@@ -61,7 +68,9 @@ public class Baum<B, T> implements AssoziativesArray {
 		
 
 }
-
+	/**
+	 * 
+	 */
 	@Override
 	public void clear() {
 		wurzel = null;
@@ -100,6 +109,9 @@ public class Baum<B, T> implements AssoziativesArray {
 		return false;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public Object get(Object schluessel) {
 		Knoten zeiger = wurzel;
@@ -126,11 +138,11 @@ public class Baum<B, T> implements AssoziativesArray {
 		}
 		return false;
 	}
-
 	/**
 	 * 
+	 * @param temp
+	 * @param n
 	 */
-
 	@Override
 	public void put(Object schluessel, Object wert) {
 		Knoten parent = null;
@@ -166,6 +178,9 @@ public class Baum<B, T> implements AssoziativesArray {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	/**
+	 * 
+	 */
 	@Override
 	public int size() {
 		 if (wurzel == null) {
@@ -187,7 +202,9 @@ public class Baum<B, T> implements AssoziativesArray {
 		 }
 		 return 1 + sizeLinks + sizeRechts;
 		 }
-		
+	/**
+	 * 
+	 */
 	@Override
 	public void update(Object schluessel, Object wert) {
 		// TODO Auto-generated method stub
@@ -235,10 +252,10 @@ public class Baum<B, T> implements AssoziativesArray {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Konvertiert alle Knoten in einen fortlaufenden String für die Ausgabe
 	 * 
-	 * @see java.lang.Object#toString()
+	 * @return Baum als String
 	 */
 	@Override
 	public String toString() {
