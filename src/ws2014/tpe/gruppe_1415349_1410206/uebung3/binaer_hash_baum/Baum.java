@@ -67,7 +67,7 @@ public class Baum<B, T> implements AssoziativesArray {
 		wurzel = null;
 
 	}
-
+//nicht fertig
 	@Override
 	public boolean containsValue(Object wert) {
 		Knoten zeiger = wurzel;
