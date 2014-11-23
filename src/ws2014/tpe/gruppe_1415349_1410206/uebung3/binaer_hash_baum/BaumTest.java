@@ -6,10 +6,10 @@ import org.junit.Test;
 
 public class BaumTest {
 
-	AssoziativesArray liste = new Baum("a", 4);
-	AssoziativesArray liste2 = new Baum("a", 4);
-	AssoziativesArray liste3 = new Baum("a", 4);
-	AssoziativesArray liste4 = new Baum("a", 4);
+	Baum liste = new Baum("a", 4);
+	Baum liste2 = new Baum("a", 4);
+	Baum liste3 = new Baum("a", 4);
+	Baum liste4 = new Baum("a", 4);
 
 	@Test
 	public void putSizeTest() {
@@ -85,11 +85,40 @@ public class BaumTest {
 	@Test
 	public void isEmptyTest() {
 		assertEquals(false, liste.isEmpty());
-		assertEquals(true, liste3.isEmpty());
+		assertEquals(false, liste3.isEmpty());
 	}
 
 	@Test
 	public void putAllTest() {
+		liste.put("ab", 3);
+		liste.put("d", 3);
+		liste.put("ei", 3);
+		liste.put("de", 3);
+		liste4.put("af", 5);
+		liste4.put("ad", 5);
+		liste4.put("ba", 5);
+		liste.putAll(liste4);
+		assertEquals("{a=4, d=3, ab=3, ad=5, af=5, ba=5, de=3, ei=3}",
+				liste.toString());
+	}
+	
+	@Test
+	public void removeTest() {
+		liste.put("ab", 3);
+		liste.put("d", 3);
+		liste.put("ei", 3);
+		liste.put("de", 3);
+		liste.put("af", 5);
+		liste.put("ad", 5);
+		liste.put("ba", 5);
+		liste.remove("a"); //Wurzelknoten entfernen
+		assertEquals("{d=3, ab=3, ad=5, af=5, ba=5, de=3, ei=3}",
+				liste.toString());
+		
+		liste.remove("ad");
+		assertEquals("{d=3, ab=3, af=5, ba=5, de=3, ei=3}",
+				liste.toString());
+		
 	}
 
 	@Test
@@ -105,12 +134,18 @@ public class BaumTest {
 
 	@Test
 	public void extractAllTest() {
+		liste4.put("b", 5);
+		liste4.put("bo", 5);
+		liste4.put("ac", 5);
+		liste.extractAll(liste4);
+		assertEquals("{a=4, b=5, ac=5, bo=5}", liste4.toString());
+
 	}
 
 	@Test
 	public void mapTest() {
 	}
-	
+
 	@Test
 	public void toStringTest() {
 		liste4.put("b", 5);
