@@ -1,14 +1,23 @@
 package ws2014.tpe.gruppe_1415349_1410206.uebung3.binaer_hash_baum;
 
 public class Baum<B, T> implements AssoziativesArray {
+
 	private Knoten<B, T> wurzel;
+
+	public Baum() {
+		wurzel = null;
+	}
+
+	public Baum(Knoten knoten) {
+		wurzel = knoten;
+	}
 
 	public Baum(B schluessel, T wert) {
 		put(schluessel, wert);
 	}
 
 	/**
-	 * Innere Klasse die einen Knoten Darstellt.
+	 * Innere Klasse die, einen Knoten darstellt.
 	 * 
 	 * @author FH-Netbook
 	 * 
@@ -29,10 +38,10 @@ public class Baum<B, T> implements AssoziativesArray {
 			this.rechts = null;
 		}
 
-		/*
-		 * (non-Javadoc)
+		/**
+		 * Gibt Schluessel und Wert von Knoten als String zurueck
 		 * 
-		 * @see java.lang.Object#toString()
+		 * @return String
 		 */
 		@Override
 		public String toString() {
@@ -42,7 +51,8 @@ public class Baum<B, T> implements AssoziativesArray {
 		/**
 		 * Setzt den linken Nachfolger und verknüpft ihn mit seinem Vorgänger.
 		 * 
-		 * @param n
+		 * @param zeiger
+		 *            von Typ Knoten
 		 */
 		public void setLeft(Knoten zeiger) {
 			links = zeiger;
@@ -54,7 +64,8 @@ public class Baum<B, T> implements AssoziativesArray {
 		/**
 		 * Setzt den rechten Nachfolger und verknüpft ihn mit seinem Vorgänger.
 		 * 
-		 * @param n
+		 * @param zeiger
+		 *            von Typ Knoten
 		 */
 		public void setRight(Knoten zeiger) {
 			rechts = zeiger;
@@ -66,26 +77,32 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
-	 * 
+	 * Macht den Baum leer
 	 */
 	@Override
 	public void clear() {
 		wurzel = null;
 
 	}
-/**
- * 
- */
+
+	/**
+	 * Ueberprueft, ob der uebergebene Wert im assoziativen Array vorkommt
+	 * 
+	 * @param wert
+	 *            von Typ Object
+	 * @return true oder false
+	 */
 	@Override
 	public boolean containsValue(Object wert) {
 		return Value(wurzel, wert);
 	}
-/**
- * 
- * @param knoten
- * @param wert
- * @return
- */
+
+	/**
+	 * 
+	 * @param knoten
+	 * @param wert
+	 * @return
+	 */
 	private boolean Value(Knoten<B, T> knoten, Object wert) {
 		boolean a = false;
 		if (knoten.links != null) {
@@ -101,9 +118,13 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
+	 * Ueberprueft, ob der uebergebene Schluessel im assoziativen Array vorkommt
 	 * 
+	 * @param schluessel
+	 *            von Typ Object
+	 * @return true oder false
 	 */
-	
+
 	@Override
 	public boolean containsKey(Object schluessel) {
 		Knoten zeiger = wurzel;
@@ -121,7 +142,11 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
+	 * Gibt den passenden Wert zum uebergebenen Schluessel zurueck
 	 * 
+	 * @param schluessel
+	 *            von Typ Object
+	 * @return wert
 	 */
 	@Override
 	public Object get(Object schluessel) {
@@ -141,7 +166,9 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
+	 * Ueberprueft, ob das assoziative Array leer ist
 	 * 
+	 * @return true oder false
 	 */
 	@Override
 	public boolean isEmpty() {
@@ -152,58 +179,175 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
+	 * Speichert den uebergebenen Schluessel und Wert im assoziativen Array
 	 * 
-	 * @param temp
-	 * @param n
+	 * @param schluessel
+	 *            , wert von Typ Object
 	 */
 	@Override
 	public void put(Object schluessel, Object wert) {
-		Knoten parent = null;
+
 		Knoten node = wurzel;
 
+		if (isEmpty()) {
+			wurzel = new Knoten(schluessel, wert);
+			return;
+		}
 		while (node != null) {
 			if (schluessel.hashCode() == node.schluessel.hashCode()) {
 				break;
 			}
-			parent = node;
 
 			if (schluessel.hashCode() < node.schluessel.hashCode()) {
+				if (node.links == null) {
+					node.links = new Knoten(schluessel, wert);
+					break;
+				}
 				node = node.links;
+
 			} else {
+				if (node.rechts == null) {
+					node.rechts = new Knoten(schluessel, wert);
+					break;
+				}
 				node = node.rechts;
 			}
 		}
+	}
 
-		Knoten newNode = new Knoten(schluessel, wert);
-		if (parent == null) {
-			wurzel = newNode;
+	/**
+	 * Fuegt alle Schluussel-Wert-Paare des uebergebenen assoziativen Arrays zum
+	 * aktuellen assoziativen Array hinzu
+	 * 
+	 * @param baum
+	 *            von Typ Bam
+	 */
+	public void putAll(Baum baum) {
+		if (baum != null) {
+			if (!baum.isEmpty()) {
+				putAllrek(baum.wurzel);
+			}
+		}
+	}
 
-		} else if (schluessel.hashCode() < parent.schluessel.hashCode()) {
-			parent.setLeft(newNode);
+	/**
+	 * Hilfsmethode fuer putAll-Methode
+	 * 
+	 * @param knoten
+	 */
+	private void putAllrek(Knoten knoten) {
+		if (knoten.links != null) {
+			putAllrek(knoten.links);
+		}
+
+		put(knoten.schluessel, knoten.wert);
+
+		if (knoten.rechts != null) {
+			putAllrek(knoten.rechts);
+		}
+	}
+
+	/**
+	 * Entfernt das Schluessel-Wert-Paar des uebergebenen Schluessels aus dem
+	 * assoziativen Array und liefert den Wert zurueck
+	 * 
+	 * @param schluessel
+	 *            von Typ Object
+	 * @return wert
+	 */
+	@Override
+	public Object remove(Object schluessel) {
+		Knoten zeiger = null;
+		Object rueckwert = null;
+
+		if (!containsKey(schluessel)) {
+			return rueckwert;
+		}
+		if (wurzel.schluessel == schluessel) {
+			Baum linkerUnterbaum = new Baum(wurzel.links);
+			Baum rechterUnterbaum = new Baum(wurzel.rechts);
+
+			rueckwert = wurzel.wert;
+			wurzel = null;
+			putAll(linkerUnterbaum);
+			putAll(rechterUnterbaum);
+			return rueckwert;
 
 		} else {
-			parent.setRight(newNode);
+			Knoten zuLoeschender = null;
+			Knoten elternKnoten = elternSuche(wurzel, schluessel);
+			if (elternKnoten.links != null) {
+				if (elternKnoten.links.schluessel == schluessel) {
+					zuLoeschender = elternKnoten.links;
+				}
+			}
+
+			if (elternKnoten.rechts != null) {
+				if (elternKnoten.rechts.schluessel == schluessel) {
+					zuLoeschender = elternKnoten.rechts;
+				}
+			}
+
+			Baum linkerUnterbaum = new Baum(zuLoeschender.links);
+			Baum rechterUnterbaum = new Baum(zuLoeschender.rechts);
+
+			rueckwert = zuLoeschender.wert;
+			if (elternKnoten.links != null) {
+				if (elternKnoten.links.schluessel == schluessel) {
+					elternKnoten.links = null;
+				}
+			}
+			if (elternKnoten.rechts != null) {
+				if (elternKnoten.rechts.schluessel == schluessel) {
+					elternKnoten.rechts = null;
+				}
+			}
+			zuLoeschender = null;
+			putAll(linkerUnterbaum);
+			putAll(rechterUnterbaum);
+			return rueckwert;
 		}
 
 	}
-/**
- * 
- */
-	@Override
-	public void putAll(Baum knoten) {
-
-	}
 
 	/**
-	 * @return Wert Generisch
-	 */
-	@Override
-	public T remove(Object schluessel) {
-		return null;
-	}
-
-	/**
+	 * Hilfsmethode, sucht Knoten, der vor dem zu löschemden Knoten steht
 	 * 
+	 * @param knoten
+	 * @param schluessel
+	 * @return
+	 */
+
+	private Knoten elternSuche(Knoten knoten, Object schluessel) {
+		Knoten eltern = null;
+
+		if (knoten.links != null) {
+			if (knoten.links.schluessel == schluessel) {
+
+				eltern = knoten;
+			} else {
+				eltern = elternSuche(knoten.links, schluessel);
+
+			}
+		}
+		if (eltern == null) {
+
+			if (knoten.rechts != null) {
+				if (knoten.rechts.schluessel == schluessel) {
+
+					eltern = knoten;
+				} else {
+					eltern = elternSuche(knoten.rechts, schluessel);
+				}
+			}
+		}
+		return eltern;
+	}
+
+	/**
+	 * Gibt Anzahl der Schluessel-Wert-Paare zurueck
+	 * 
+	 * @return anzahl
 	 */
 	@Override
 	public int size() {
@@ -213,11 +357,13 @@ public class Baum<B, T> implements AssoziativesArray {
 			return size(wurzel);
 		}
 	}
-/**
- * 
- * @param knoten
- * @return
- */
+
+	/**
+	 * Hilfsmethode, die rekursiv alle Knoten durchlaeuft
+	 * 
+	 * @param knoten
+	 * @return
+	 */
 	private int size(Knoten knoten) {
 		int sizeLinks = 0;
 		int sizeRechts = 0;
@@ -231,21 +377,51 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
+	 * Aktualisiert den Wert des ubergebenen Schlussels mit dem ubergebenen
+	 * Wert
 	 * 
+	 * @param schluessel, wert von Typ Object
 	 */
 	@Override
 	public void update(Object schluessel, Object wert) {
-		// TODO Auto-generated method stub
+		updateRek(wurzel, schluessel, wert);
+	}
+	/**
+	 * Hilfsmethode, die benoetigten Knoten sucht
+	 * @param knoten
+	 * @param schluessel
+	 * @param wert
+	 */
+	private void updateRek(Knoten knoten, Object schluessel, Object wert) {
+		if (knoten.links != null) {
+			updateRek(knoten.links, schluessel, wert);
+		}
+
+		containsKey(schluessel);
+		if (containsKey(schluessel)) {
+			knoten.wert = wert;
+		}
+
+		if (knoten.rechts != null) {
+			updateRek(knoten.links, schluessel, wert);
+		}
 
 	}
 
 	/**
+	 * Fuegt alle Schluessel-Wert-Paare des aktuellen assoziativen Arrays zum
+	 * uebergebenen assoziativen Array hinzu
 	 * 
+	 * @param baum
+	 *            von Typ Baum
 	 */
 	@Override
 	public void extractAll(Baum baum) {
-		// TODO Auto-generated method stub
-
+		if (baum != null) {
+			if (!baum.isEmpty()) {
+				baum.putAll(this);
+			}
+		}
 	}
 
 	/**
@@ -301,11 +477,14 @@ public class Baum<B, T> implements AssoziativesArray {
 		}
 		return "{" + ausgabe + "}";
 	}
-/**
- * 
- * @param knoten
- * @return
- */
+
+	/**
+	 * Fuehrt zuerst den linken Teilbaum, dann die Wurzel und schließlich den
+	 * rechten Teilbaum aus
+	 * 
+	 * @param knoten
+	 * @return
+	 */
 	public String toStringInOrder(Knoten<B, T> knoten) {
 		String a = "";
 		if (knoten.links != null) {
