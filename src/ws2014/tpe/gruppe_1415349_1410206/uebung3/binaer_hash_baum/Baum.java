@@ -1,15 +1,14 @@
 package ws2014.tpe.gruppe_1415349_1410206.uebung3.binaer_hash_baum;
 
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+
 public class Baum<B, T> implements AssoziativesArray {
 
 	private Knoten<B, T> wurzel;
 
 	public Baum() {
 		wurzel = null;
-	}
-
-	public Baum(Knoten knoten) {
-		wurzel = knoten;
 	}
 
 	public Baum(B schluessel, T wert) {
@@ -25,7 +24,6 @@ public class Baum<B, T> implements AssoziativesArray {
 	 * @param <T>
 	 */
 	class Knoten<B, T> {
-		private Knoten<B, T> eltern;
 		private Knoten<B, T> links;
 		private Knoten<B, T> rechts;
 		private B schluessel;
@@ -46,32 +44,6 @@ public class Baum<B, T> implements AssoziativesArray {
 		@Override
 		public String toString() {
 			return schluessel + "=" + wert;
-		}
-
-		/**
-		 * Setzt den linken Nachfolger und verknüpft ihn mit seinem Vorgänger.
-		 * 
-		 * @param zeiger
-		 *            von Typ Knoten
-		 */
-		public void setLeft(Knoten zeiger) {
-			links = zeiger;
-			if (zeiger != null) {
-				zeiger.eltern = this;
-			}
-		}
-
-		/**
-		 * Setzt den rechten Nachfolger und verknüpft ihn mit seinem Vorgänger.
-		 * 
-		 * @param zeiger
-		 *            von Typ Knoten
-		 */
-		public void setRight(Knoten zeiger) {
-			rechts = zeiger;
-			if (zeiger != null) {
-				zeiger.eltern = this;
-			}
 		}
 
 	}
@@ -264,8 +236,10 @@ public class Baum<B, T> implements AssoziativesArray {
 			return rueckwert;
 		}
 		if (wurzel.schluessel == schluessel) {
-			Baum linkerUnterbaum = new Baum(wurzel.links);
-			Baum rechterUnterbaum = new Baum(wurzel.rechts);
+			Baum linkerUnterbaum = new Baum();
+			Baum rechterUnterbaum = new Baum();
+			linkerUnterbaum.wurzel = wurzel.links;
+			rechterUnterbaum.wurzel = wurzel.rechts;
 
 			rueckwert = wurzel.wert;
 			wurzel = null;
@@ -288,8 +262,10 @@ public class Baum<B, T> implements AssoziativesArray {
 				}
 			}
 
-			Baum linkerUnterbaum = new Baum(zuLoeschender.links);
-			Baum rechterUnterbaum = new Baum(zuLoeschender.rechts);
+			Baum linkerUnterbaum = new Baum();
+			Baum rechterUnterbaum = new Baum();
+			linkerUnterbaum.wurzel = zuLoeschender.links;
+			rechterUnterbaum.wurzel = zuLoeschender.rechts;
 
 			rueckwert = zuLoeschender.wert;
 			if (elternKnoten.links != null) {
@@ -377,17 +353,20 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
-	 * Aktualisiert den Wert des ubergebenen Schlussels mit dem ubergebenen
+	 * Aktualisiert den Wert des uebergebenen Schluessels mit dem uebergebenen
 	 * Wert
 	 * 
-	 * @param schluessel, wert von Typ Object
+	 * @param schluessel
+	 *            , wert von Typ Object
 	 */
 	@Override
 	public void update(Object schluessel, Object wert) {
 		updateRek(wurzel, schluessel, wert);
 	}
+
 	/**
 	 * Hilfsmethode, die benoetigten Knoten sucht
+	 * 
 	 * @param knoten
 	 * @param schluessel
 	 * @param wert
@@ -476,6 +455,47 @@ public class Baum<B, T> implements AssoziativesArray {
 
 		}
 		return "{" + ausgabe + "}";
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public void forEach(BiConsumer bi) {
+		forEachRek(wurzel, bi);
+	}
+
+	private void forEachRek(Knoten knoten, BiConsumer biConsumer) {
+		if (knoten.links != null) {
+			forEachRek(knoten.links, biConsumer);
+		}
+
+		biConsumer.accept(knoten.schluessel, knoten.wert);
+
+		if (knoten.rechts != null) {
+			forEachRek(knoten.rechts, biConsumer);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public Baum map(BiFunction funk) {
+		
+		return null;
+	}
+	
+	private Baum mapRek(Knoten knoten, BiFunction funk){
+		if (knoten.links != null) {
+			mapRek(knoten.links, funk);
+		}
+
+		funk.apply(knoten.schluessel, knoten.wert);
+
+		if (knoten.rechts != null) {
+			mapRek(knoten.rechts, funk);
+		}
 	}
 
 	/**
