@@ -1,10 +1,13 @@
 package ws2014.tpe.gruppe_1415349_1410206.uebung3.binaer_hash_baum;
 
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+
 public class Baum<B, T> implements AssoziativesArray {
 
 	private Knoten<B, T> wurzel;
 
-	public Baum() {
+	private Baum() {
 		wurzel = null;
 	}
 
@@ -14,6 +17,8 @@ public class Baum<B, T> implements AssoziativesArray {
 
 	/**
 	 * Innere Klasse die, einen Knoten darstellt.
+	 * 
+	 * @author FH-Netbook
 	 * 
 	 * @param <B>
 	 * @param <T>
@@ -41,25 +46,13 @@ public class Baum<B, T> implements AssoziativesArray {
 			return schluessel + "=" + wert;
 		}
 
-		/**
-		 * Setzt den linken Nachfolger und verknüpft ihn mit seinem Vorgänger.
-		 * 
-		 * @param zeiger
-		 *            von Typ Knoten
-		 */
-		/*
-		 * public void setLeft(Knoten zeiger) { links = zeiger; if (zeiger !=
-		 * null) { zeiger.eltern = this; } }
-		 * 
-		 * /** Setzt den rechten Nachfolger und verknüpft ihn mit seinem
-		 * Vorgänger.
-		 * 
-		 * @param zeiger von Typ Knoten
-		 */
-		/*
-		 * public void setRight(Knoten zeiger) { rechts = zeiger; if (zeiger !=
-		 * null) { zeiger.eltern = this; } }
-		 */
+		public B getSchluessel() {
+			return this.schluessel;
+		}
+
+		public T getWert() {
+			return this.wert;
+		}
 
 	}
 
@@ -136,9 +129,9 @@ public class Baum<B, T> implements AssoziativesArray {
 	 * @return wert
 	 */
 	@Override
-	public <B> T get(B schluessel) {
+	public Object get(Object schluessel) {
 		Knoten zeiger = wurzel;
-		
+
 		while (zeiger != null) {
 			if (zeiger.schluessel.hashCode() == schluessel.hashCode()) {
 				return zeiger.wert;
@@ -148,7 +141,7 @@ public class Baum<B, T> implements AssoziativesArray {
 				zeiger = zeiger.rechts;
 			}
 		}
-		return null;
+		return 0;
 
 	}
 
@@ -240,70 +233,62 @@ public class Baum<B, T> implements AssoziativesArray {
 	 */
 	@Override
 	public Object remove(Object schluessel) {
-		Baum rechts;
-		Baum links;
-		T wert;
-		Knoten dieser = getKnoten(schluessel);
-		wert = dieser.get(schluessel);
+		Knoten zeiger = null;
+		Object rueckwert = null;
 
-		rechts = new Baum(dieser.rechts.schluessel, dieser.rechts.wert);
-		links = new Baum(dieser.links.schluessel, dieser.links.wert);
-
-		dieser = null;
-
-		putAll(rechts);
-		putAll(links);
-	}
-
-	private Knoten<B, T> getKnoten(T schluessel) {
-		Knoten zeiger = wurzel;
-		while (zeiger != null) {
-			if (zeiger.schluessel.hashCode() == schluessel.hashCode()) {
-				return zeiger;
-			} else if (schluessel.hashCode() < zeiger.schluessel.hashCode()) {
-				zeiger = zeiger.links;
-			} else {
-				zeiger = zeiger.rechts;
-			}
+		if (!containsKey(schluessel)) {
+			return rueckwert;
 		}
-		return null;
-	}
+		if (wurzel.schluessel == schluessel) {
+			Baum linkerUnterbaum = new Baum();
+			Baum rechterUnterbaum = new Baum();
+			linkerUnterbaum.wurzel = wurzel.links;
+			rechterUnterbaum.wurzel = wurzel.rechts;
 
-	/*
-	 * 
-	 * 
-	 * 
-	 * Knoten zeiger = null; Object rueckwert = null;
-	 * 
-	 * if (!containsKey(schluessel)) { return rueckwert; } if (wurzel.schluessel
-	 * == schluessel) { Baum linkerUnterbaum = new Baum(wurzel.links.schluessel,
-	 * wurzel.links.wert); Baum rechterUnterbaum = new
-	 * Baum(wurzel.rechts.schluessel, wurzel.rechts.wert);
-	 * 
-	 * rueckwert = wurzel.wert; wurzel = null; putAll(linkerUnterbaum);
-	 * putAll(rechterUnterbaum); return rueckwert;
-	 * 
-	 * } else { Knoten zuLoeschender = null; Knoten elternKnoten =
-	 * elternSuche(wurzel, schluessel); if (elternKnoten.links != null) { if
-	 * (elternKnoten.links.schluessel == schluessel) { zuLoeschender =
-	 * elternKnoten.links; } }
-	 * 
-	 * if (elternKnoten.rechts != null) { if (elternKnoten.rechts.schluessel ==
-	 * schluessel) { zuLoeschender = elternKnoten.rechts; } }
-	 * 
-	 * Baum linkerUnterbaum = new Baum(zuLoeschender.links.schluessel,
-	 * zuLoeschender.rechts.wert); Baum rechterUnterbaum = new
-	 * Baum(zuLoeschender.rechts.schluessel, zuLoeschender.rechts.wert);
-	 * 
-	 * rueckwert = zuLoeschender.wert; if (elternKnoten.links != null) { if
-	 * (elternKnoten.links.schluessel == schluessel) { elternKnoten.links =
-	 * null; } } if (elternKnoten.rechts != null) { if
-	 * (elternKnoten.rechts.schluessel == schluessel) { elternKnoten.rechts =
-	 * null; } } zuLoeschender = null; putAll(linkerUnterbaum);
-	 * putAll(rechterUnterbaum); return rueckwert; }
-	 * 
-	 * }
-	 */
+			rueckwert = wurzel.wert;
+			wurzel = null;
+			putAll(linkerUnterbaum);
+			putAll(rechterUnterbaum);
+			return rueckwert;
+
+		} else {
+			Knoten zuLoeschender = null;
+			Knoten elternKnoten = elternSuche(wurzel, schluessel);
+			if (elternKnoten.links != null) {
+				if (elternKnoten.links.schluessel == schluessel) {
+					zuLoeschender = elternKnoten.links;
+				}
+			}
+
+			if (elternKnoten.rechts != null) {
+				if (elternKnoten.rechts.schluessel == schluessel) {
+					zuLoeschender = elternKnoten.rechts;
+				}
+			}
+
+			Baum linkerUnterbaum = new Baum();
+			Baum rechterUnterbaum = new Baum();
+			linkerUnterbaum.wurzel = zuLoeschender.links;
+			rechterUnterbaum.wurzel = zuLoeschender.rechts;
+
+			rueckwert = zuLoeschender.wert;
+			if (elternKnoten.links != null) {
+				if (elternKnoten.links.schluessel == schluessel) {
+					elternKnoten.links = null;
+				}
+			}
+			if (elternKnoten.rechts != null) {
+				if (elternKnoten.rechts.schluessel == schluessel) {
+					elternKnoten.rechts = null;
+				}
+			}
+			zuLoeschender = null;
+			putAll(linkerUnterbaum);
+			putAll(rechterUnterbaum);
+			return rueckwert;
+		}
+
+	}
 
 	/**
 	 * Hilfsmethode, sucht Knoten, der vor dem zu löschemden Knoten steht
@@ -372,7 +357,7 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
-	 * Aktualisiert den Wert des ubergebenen Schlussels mit dem ubergebenen
+	 * Aktualisiert den Wert des uebergebenen Schluessels mit dem uebergebenen
 	 * Wert
 	 * 
 	 * @param schluessel
@@ -477,6 +462,54 @@ public class Baum<B, T> implements AssoziativesArray {
 	}
 
 	/**
+	 * 
+	 * @param bi
+	 */
+	@Override
+	public void forEach(BiConsumer cons, Object wertA, Object wertB) {
+		forEachRek(wurzel, cons, wertA, wertB);
+	}
+
+	private void forEachRek(Knoten knoten, BiConsumer cons, Object wertA,
+			Object wertB) {
+		if (knoten.links != null) {
+			forEachRek(knoten.links, cons, wertA, wertB);
+		}
+
+		cons.accept(wertA, wertB);
+
+		if (knoten.rechts != null) {
+			forEachRek(knoten.rechts, cons, wertA, wertB);
+		}
+	}
+
+	/**
+	 * 
+	 * @param funk
+	 * @return
+	 */
+	@Override
+	public Baum map(BiFunction funk, Object wertA, Object wertB) {
+		Baum erg = new Baum(wurzel.schluessel, funk.apply(wertA, wertB));
+		mapRek(wurzel, funk, wertA, wertB, erg);
+		return erg;
+	}
+
+	private <B, T> void mapRek(Knoten knoten, BiFunction funk, Object wertA,
+			Object wertB, Baum erg) {
+		if (knoten.links != null) {
+			mapRek(knoten.links, funk, wertA, wertB, erg);
+		}
+
+		erg.put(knoten.schluessel, funk.apply(wertA, wertB));
+
+		if (knoten.rechts != null) {
+			mapRek(knoten.rechts, funk, wertA, wertB, erg);
+		}
+
+	}
+
+	/**
 	 * Fuehrt zuerst den linken Teilbaum, dann die Wurzel und schließlich den
 	 * rechten Teilbaum aus
 	 * 
@@ -495,5 +528,26 @@ public class Baum<B, T> implements AssoziativesArray {
 			a = a + toStringInOrder(knoten.rechts);
 		}
 		return a;
+	}
+
+	public Knoten[] liste() {
+		return listeRek(wurzel);
+	}
+
+	private Knoten[] listeRek(Knoten knoten) {
+		Knoten[] erg = new Knoten[size()];
+		int index = 0;
+		if (knoten.links != null) {
+			erg[index] = knoten;
+			index++;
+			listeRek(knoten.links);
+		}
+
+		if (knoten.rechts != null) {
+			erg[index] = knoten;
+			index++;
+			listeRek(knoten.rechts);
+		}
+		return erg;
 	}
 }
