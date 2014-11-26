@@ -100,10 +100,10 @@ public class BaumTest {
 		liste4.put("ba", 5);
 		liste4.put("ei", 7);
 		liste.putAll(liste4);
-		assertEquals("{a=4, d=3, ab=3, ad=5, af=5, ba=5, de=3, ei=3}",
+		assertEquals("{a=4, ab=3, d=3, ei=3, de=3, af=5, ad=5, ba=5}",
 				liste.toString());
 	}
-	
+
 	@Test
 	public void removeTest() {
 		liste.put("ab", 3);
@@ -113,15 +113,14 @@ public class BaumTest {
 		liste.put("af", 5);
 		liste.put("ad", 5);
 		liste.put("ba", 5);
-		assertEquals("{a=4, d=3, ab=3, ad=5, af=5, ba=5, de=3, ei=3}",
+		assertEquals("{a=4, ab=3, d=3, ei=3, de=3, af=5, ad=5, ba=5}",
 				liste.toString());
-		liste.remove("a"); //Wurzelknoten entfernen
-		assertEquals("{d=3, ab=3, ad=5, af=5, ba=5, de=3, ei=3}",
+		assertEquals(4,liste.remove("a")); // Wurzelknoten entfernen
+		assertEquals("{ab=3, d=3, ei=3, de=3, af=5, ad=5, ba=5}",
 				liste.toString());
 		liste.remove("ad");
-		assertEquals("{d=3, ab=3, af=5, ba=5, de=3, ei=3}",
-				liste.toString());
-		
+		assertEquals("{ab=3, d=3, ei=3, de=3, af=5, ba=5}", liste.toString());
+
 	}
 
 	@Test
@@ -141,7 +140,7 @@ public class BaumTest {
 		liste4.put("bo", 5);
 		liste4.put("ac", 5);
 		liste.extractAll(liste4);
-		assertEquals("{a=4, b=5, ac=5, bo=5}", liste4.toString());
+		assertEquals("{a=4, b=5, bo=5, ac=5}", liste4.toString());
 
 	}
 
@@ -158,12 +157,12 @@ public class BaumTest {
 		liste4.put("ad", 5);
 		liste4.put("ba", 5);
 
-		assertEquals("{a=4, b=5, ac=5, ad=5, af=5, ba=5, bo=5}",
+		assertEquals("{a=4, b=5, bo=5, ac=5, af=5, ad=5, ba=5}",
 				liste4.toString());
 	}
-	
+
 	@Test
-	public void hashCodeTest(){
+	public void hashCodeTest() {
 		liste.put("ab", 3);
 		liste.put("d", 3);
 		liste.put("ei", 3);
@@ -173,8 +172,8 @@ public class BaumTest {
 		liste.put("hzu", 3);
 		liste.put("aum", 3);
 		liste.put("dzd", 3);
-		assertTrue(liste.get("a").hashCode()==liste3.get("a").hashCode());
-//		assertTrue(liste.get("a").hashCode()==liste2.get("a").hashCode());
-		assertFalse(liste.get("a").hashCode()==liste.get("ab").hashCode());
+		assertTrue(liste.get("a").hashCode() == liste3.get("a").hashCode());
+		// assertTrue(liste.get("a").hashCode()==liste2.get("a").hashCode());
+		assertFalse(liste.get("a").hashCode() == liste.get("ab").hashCode());
 	}
 }
