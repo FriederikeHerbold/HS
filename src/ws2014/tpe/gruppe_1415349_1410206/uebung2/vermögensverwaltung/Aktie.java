@@ -25,4 +25,5 @@ public class Aktie extends Vermoegensgegenstaende {
 				+ "Kurs ist: " + this.kurs;
 
 	}
+	//Test
 }
